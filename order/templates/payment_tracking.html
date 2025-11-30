@@ -1,0 +1,219 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+
+{% block title %}{% if success %}پرداخت موفق{% else %}پرداخت ناموفق{% endif %}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/payment_tracking.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    /* Hide shopping cart on payment tracking page */
+    .cart-container {
+        display: none !important;
+    }
+</style>
+
+<!-- Header Section -->
+<div class="payment-header">
+    <div class="header-content">
+        {% if success %}
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1>پرداخت با موفقیت انجام شد</h1>
+        <p class="header-subtitle">سفارش شما با موفقیت ثبت و پرداخت شد</p>
+        {% else %}
+        <div class="error-icon">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <h1>پرداخت ناموفق بود</h1>
+        <p class="header-subtitle">متأسفانه پرداخت شما انجام نشد</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="payment-container">
+    {% if success %}
+    <!-- Success State -->
+    <div class="payment-success-card">
+        <div class="success-animation">
+            <div class="checkmark-circle">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+        
+        <div class="payment-details">
+            <h2><i class="fas fa-receipt"></i> جزئیات پرداخت</h2>
+            
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-hashtag"></i> شناسه پرداخت
+                    </div>
+                    <div class="detail-value">{{ reference_id }}</div>
+                </div>
+                
+                {% if order %}
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-shopping-bag"></i> شماره سفارش
+                    </div>
+                    <div class="detail-value">#{{ order.id }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-alt"></i> تاریخ پرداخت
+                    </div>
+                    <div class="detail-value">{{ order.created|date:"Y/m/d H:i" }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-money-bill-wave"></i> مبلغ پرداخت شده
+                    </div>
+                    <div class="detail-value highlight">{{ order.get_total_price_with_post|floatformat:0 }} تومان</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-check-double"></i> وضعیت پرداخت
+                    </div>
+                    <div class="detail-value status-badge paid">
+                        <i class="fas fa-check-circle"></i> پرداخت شده
+                    </div>
+                </div>
+                {% else %}
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-shopping-bag"></i> شماره سفارش
+                    </div>
+                    <div class="detail-value">#{{ order_id }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if order %}
+        <!-- Order Summary -->
+        <div class="order-summary-section">
+            <h3><i class="fas fa-list"></i> خلاصه سفارش</h3>
+            <div class="summary-items">
+                {% for item in order.items.all %}
+                <div class="summary-item">
+                    <div class="item-info">
+                        <span class="item-name">{{ item.product.name }}</span>
+                        <span class="item-quantity">{{ item.quantity }} عدد</span>
+                    </div>
+                    <div class="item-price">{{ item.get_cost|floatformat:0 }} تومان</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="summary-totals">
+                <div class="total-row">
+                    <span>جمع محصولات:</span>
+                    <strong>{{ order.get_total_price|floatformat:0 }} تومان</strong>
+                </div>
+                <div class="total-row">
+                    <span>هزینه ارسال:</span>
+                    <strong>{{ order.get_post_price|floatformat:0 }} تومان</strong>
+                </div>
+                <div class="total-row final-total">
+                    <span>مبلغ کل:</span>
+                    <strong>{{ order.get_total_price_with_post|floatformat:0 }} تومان</strong>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Success Message -->
+        <div class="success-message">
+            <i class="fas fa-info-circle"></i>
+            <p>سفارش شما با موفقیت ثبت شد. یک ایمیل تایید به آدرس ایمیل شما ارسال خواهد شد.</p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            {% if order %}
+            <a href="{% url 'order:invoice' order.id %}" class="btn btn-invoice">
+                <i class="fas fa-file-invoice"></i> مشاهده فاکتور
+            </a>
+            <a href="{% url 'order:order_detail' order.id %}" class="btn btn-details">
+                <i class="fas fa-eye"></i> جزئیات سفارش
+            </a>
+            {% endif %}
+            <a href="{% url 'order:order_list' %}" class="btn btn-orders">
+                <i class="fas fa-list"></i> لیست سفارشات
+            </a>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-shop">
+                <i class="fas fa-store"></i> ادامه خرید
+            </a>
+        </div>
+    </div>
+    
+    {% else %}
+    <!-- Error State -->
+    <div class="payment-error-card">
+        <div class="error-animation">
+            <div class="error-circle">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        
+        <div class="error-content">
+            <h2><i class="fas fa-exclamation-triangle"></i> پرداخت انجام نشد</h2>
+            <p>متأسفانه پرداخت شما با مشکل مواجه شد. لطفاً دوباره تلاش کنید.</p>
+            
+            <div class="error-reasons">
+                <h3>ممکن است به دلایل زیر باشد:</h3>
+                <ul>
+                    <li><i class="fas fa-circle"></i> مشکل در ارتباط با درگاه پرداخت</li>
+                    <li><i class="fas fa-circle"></i> عدم تأیید پرداخت توسط بانک</li>
+                    <li><i class="fas fa-circle"></i> انقضای زمان پرداخت</li>
+                    <li><i class="fas fa-circle"></i> مشکل در اطلاعات کارت بانکی</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'order:order_list' %}" class="btn btn-orders">
+                <i class="fas fa-list"></i> مشاهده سفارشات
+            </a>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-shop">
+                <i class="fas fa-store"></i> بازگشت به فروشگاه
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Add animation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const successCard = document.querySelector('.payment-success-card');
+        const errorCard = document.querySelector('.payment-error-card');
+        
+        if (successCard) {
+            successCard.style.opacity = '0';
+            successCard.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                successCard.style.transition = 'all 0.6s ease';
+                successCard.style.opacity = '1';
+                successCard.style.transform = 'translateY(0)';
+            }, 100);
+        }
+        
+        if (errorCard) {
+            errorCard.style.opacity = '0';
+            errorCard.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                errorCard.style.transition = 'all 0.6s ease';
+                errorCard.style.opacity = '1';
+                errorCard.style.transform = 'translateY(0)';
+            }, 100);
+        }
+    });
+</script>
+{% endblock %}

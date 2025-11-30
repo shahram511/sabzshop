@@ -1,0 +1,11 @@
+<div class="cart-container">
+    {% with item_count=cart|length %}
+    <a href="{%url 'cart:cart_detail' %}" class="cart-link">
+        <div class="cart-icon">
+            <span class="cart-icon">🛒</span>
+            <span id="item-count" class="item-count">{{ item_count }}</span>
+            <span id="cart-total" class="cart-total">{{ cart.get_total_price }}</span>
+        </div>
+    </a>
+    {% endwith %}
+</div>

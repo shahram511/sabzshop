@@ -1,0 +1,124 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}صورتحساب سفارش #{{ order.id }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/invoice.css' %}">
+<style>
+    /* Hide shopping cart on invoice page */
+    .cart-container {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="invoice-container">
+    <!-- Invoice Header -->
+    <div class="invoice-header">
+        <h1>صورتحساب سفارش</h1>
+        <h2>شماره سفارش: #{{ order.id }}</h2>
+        <p>تاریخ: {{ order.created|date:"Y/m/d H:i" }}</p>
+        <p>وضعیت:<span class="status-paid">پرداخت شده</span></p>
+        <p>وضعیت سفارش: {{ order.get_order_status_display }}</p>
+    </div>
+
+    <!-- Customer Information -->
+    <div class="section-content">
+        <h3 class="section-header">اطلاعات خریدار:</h3>
+        <table class="info-table">
+            <tr>
+                <td><strong>نام:</strong></td>
+                <td>{{ order.first_name }} {{ order.last_name }}</td>
+            </tr>
+            {% if order.buyer %}
+            <tr>
+                <td><strong>شماره تلفن:</strong></td>
+                <td>{{ order.buyer.phone }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td><strong>ایمیل:</strong></td>
+                <td>{{ order.email }}</td>
+            </tr>
+            <tr>
+                <td><strong>شماره تماس:</strong></td>
+                <td>{{ order.phone }}</td>
+            </tr>
+            <tr>
+                <td><strong>آدرس:</strong></td>
+                <td>{{ order.address }}</td>
+            </tr>
+            <tr>
+                <td><strong>شهر:</strong></td>
+                <td>{{ order.city }}</td>
+            </tr>
+            <tr>
+                <td><strong>استان:</strong></td>
+                <td>{{ order.province }}</td>
+            </tr>
+            <tr>
+                <td><strong>کد پستی:</strong></td>
+                <td>{{ order.postal_code }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Order Items -->
+    <div class="section-content">
+        <h3 class="section-header">اقلام سفارش:</h3>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>نام محصول</th>
+                    <th>تعداد</th>
+                    <th>قیمت واحد</th>
+                    <th>قیمت کل</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price|floatformat:0 }} تومان</td>
+                    <td>{{ item.get_cost|floatformat:0 }} تومان</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-row">هیچ آیتمی در این سفارش وجود ندارد</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Price Summary -->
+    <div class="price-summary">
+        <table class="summary-table">
+            <tr>
+                <td><strong>جمع محصولات:</strong></td>
+                <td>{{ order.get_total_price|floatformat:0 }} تومان</td>
+            </tr>
+            <tr>
+                <td><strong>هزینه ارسال:</strong></td>
+                <td>{{ order.get_post_price|floatformat:0 }} تومان</td>
+            </tr>
+            <tr class="summary-total">
+                <td><strong>مبلغ کل:</strong></td>
+                <td class="total-amount">{{ order.get_total_price_with_post|floatformat:0 }} تومان</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="invoice-footer">
+        <p>با تشکر از خرید شما</p>
+        <div class="action-buttons">
+            <a href="{% url 'order:order_detail' order.id %}" class="btn btn-primary">بازگشت به جزئیات سفارش</a>
+            <a href="{% url 'order:order_list' %}" class="btn btn-secondary">بازگشت به لیست سفارشات</a>
+            <button onclick="window.print()" class="btn btn-success">چاپ صورتحساب</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

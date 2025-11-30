@@ -1,0 +1,29 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}ورود / ثبت نام{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>ورود / ثبت نام</h1>
+    <p>شماره تلفن همراه خود را وارد کنید</p>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">ارسال کد ورود</button>
+    </form>
+    
+    {% if user.is_authenticated %}
+        <p>شما وارد شده اید: {{ user.phone }}</p>
+        <a href="{% url 'shop:product_list' %}">بازگشت به صفحه اصلی</a>
+    {% endif %}
+</div>
+{% endblock %}

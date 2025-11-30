@@ -1,0 +1,183 @@
+/* Invoice Container */
+.invoice-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+/* Invoice Header */
+.invoice-header {
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.invoice-header h1 {
+    color: #333;
+    margin: 0;
+}
+
+.invoice-header h2 {
+    color: #666;
+    margin: 10px 0;
+}
+
+.invoice-header p {
+    margin: 5px 0;
+}
+
+.status-paid {
+    color: green;
+    font-weight: bold;
+}
+
+.status-unpaid {
+    color: red;
+    font-weight: bold;
+}
+
+/* Section Headers */
+.section-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.section-content {
+    margin-bottom: 30px;
+}
+
+/* Customer Info Table */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 8px;
+}
+
+.info-table td:first-child {
+    width: 150px;
+}
+
+/* Order Items Table */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.items-table thead {
+    background-color: #f5f5f5;
+}
+
+.items-table th {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.items-table th:nth-child(1) {
+    text-align: right;
+}
+
+.items-table th:nth-child(2) {
+    text-align: center;
+
+}
+
+.items-table th:nth-child(3),
+.items-table th:nth-child(4) {
+    text-align: left;
+}
+
+.items-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.items-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.items-table .empty-row {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+}
+
+/* Price Summary */
+.price-summary {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.summary-table {
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    border-collapse: collapse;
+}
+
+.summary-table td {
+    padding: 8px;
+}
+
+.summary-table td:first-child {
+    text-align: right;
+}
+
+.summary-table td:last-child {
+    text-align: left;
+}
+
+.summary-total {
+    border-top: 2px solid #333;
+    font-size: 1.2em;
+}
+
+.summary-total td {
+    padding: 12px;
+}
+
+.total-amount {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+/* Footer */
+.invoice-footer {
+    text-align: center;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+    margin-top: 30px;
+    color: #666;
+}
+
+.invoice-footer .action-buttons {
+    margin-top: 20px;
+}
+
+.invoice-footer .btn {
+    margin: 5px;
+}
+
+/* Print Styles */
+@media print {
+    .invoice-container {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .btn {
+        display: none !important;
+    }
+    
+    .invoice-footer {
+        page-break-inside: avoid;
+    }
+}
+}

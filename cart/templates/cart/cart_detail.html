@@ -1,0 +1,197 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}سبد خرید{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/cart_detail.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Header Section -->
+<div class="cart-header">
+    <div class="header-content">
+        <h1><i class="fas fa-shopping-cart"></i> سبد خرید</h1>
+        <p class="header-subtitle">محصولات انتخابی شما</p>
+    </div>
+</div>
+
+<!-- Message Section -->
+<div id="cart-message" class="cart-message" style="display: none;"></div>
+
+<!-- Main Container -->
+<div class="cart-page-container">
+    {% if cart|length %}
+        <div class="cart-layout">
+            <!-- Cart Items Section -->
+            <div class="cart-items-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-box"></i> محصولات سبد خرید</h2>
+                    <span class="items-count">{{ cart|length }} محصول</span>
+                </div>
+                
+                <div class="cart-table-wrapper">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th class="col-product">محصول</th>
+                                <th class="col-price">قیمت واحد</th>
+                                <th class="col-quantity">تعداد</th>
+                                <th class="col-total">قیمت کل</th>
+                                <th class="col-actions">عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart %}
+                            <tr class="cart-item-row" data-product-id="{{ item.product.id }}">
+                                <td class="col-product">
+                                    <div class="product-cell">
+                                        <div class="product-image">
+                                            <a href="{% url 'shop:product_detail' item.product.id item.product.slug %}">
+                                                {% if item.product.images.first %}
+                                                    <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+                                                {% else %}
+                                                    <div class="no-image">
+                                                        <i class="fas fa-image"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                        <div class="product-info">
+                                            <h3>
+                                                <a href="{% url 'shop:product_detail' item.product.id item.product.slug %}">
+                                                    {{ item.product.name }}
+                                                </a>
+                                            </h3>
+                                            {% if item.product.description %}
+                                            <p class="product-description">{{ item.product.description|truncatewords:12 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-price">
+                                    <span class="unit-price">{{ item.price }} تومان</span>
+                                </td>
+                                <td class="col-quantity">
+                                    <div class="quantity-controls">
+                                        <button type="button" class="quantity-btn decrease-btn cart-action" data-product="{{ item.product.id }}" data-action="subtract" aria-label="کاهش تعداد">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <span class="quantity-value">{{ item.quantity }}</span>
+                                        <button type="button" class="quantity-btn increase-btn cart-action" data-product="{{ item.product.id }}" data-action="add" aria-label="افزایش تعداد">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="col-total">
+                                    <strong class="total-price">{{ item.total }} تومان</strong>
+                                </td>
+                                <td class="col-actions">
+                                    <button type="button" class="remove-btn cart-action" data-product="{{ item.product.id }}" data-action="remove" aria-label="حذف محصول">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Order Summary Section -->
+            <div class="order-summary-section">
+                <div class="summary-card">
+                    <h2><i class="fas fa-receipt"></i> خلاصه سفارش</h2>
+                    
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span><i class="fas fa-shopping-bag"></i> قیمت محصولات:</span>
+                            <strong>{{ cart.get_total_price }} تومان</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span><i class="fas fa-truck"></i> هزینه ارسال:</span>
+                            <strong>{{ cart.get_post_price }} تومان</strong>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-row final-row">
+                            <span><i class="fas fa-calculator"></i> قیمت نهایی:</span>
+                            <strong class="final-price">{{ cart.get_final_price }} تومان</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-actions">
+                        <a href="{% url 'order:verify_phone' %}" class="btn-checkout">
+                            <i class="fas fa-credit-card"></i> ثبت سفارش
+                        </a>
+                        <a href="{% url 'shop:product_list' %}" class="btn-continue-shopping">
+                            <i class="fas fa-arrow-right"></i> ادامه خرید
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty Cart State -->
+        <div class="empty-cart">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h2>سبد خرید شما خالی است</h2>
+            <p>برای شروع خرید، محصولات موردعلاقه خود را از فروشگاه انتخاب کنید.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn-shopping">
+                <i class="fas fa-store"></i> ورود به فروشگاه
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function(){
+        function showMessage(message, isError = false) {
+            var $msg = $('#cart-message');
+            $msg.html('<i class="fas fa-' + (isError ? 'exclamation-circle' : 'check-circle') + '"></i> ' + message);
+            $msg.removeClass('success error').addClass(isError ? 'error' : 'success');
+            $msg.fadeIn();
+            setTimeout(function() {
+                $msg.fadeOut();
+            }, 5000);
+        }
+
+        $('.cart-action').on('click', function(e){
+            e.preventDefault();
+            const $btn = $(this);
+            const productId = $btn.data('product');
+            const action = $btn.data('action');
+            
+            // Disable button during request
+            $btn.prop('disabled', true);
+            const originalHtml = $btn.html();
+            $btn.html('<i class="fas fa-spinner fa-spin"></i>');
+
+            $.post(
+                '{% url "cart:update_quantity" 0 %}'.replace('/0/', '/' + productId + '/'),
+                {
+                    action: action,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                function(data){
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
+                    
+                    // Check if there's an error
+                    if (data.ok === false && data.error) {
+                        showMessage(data.error, true);
+                    } else {
+                        // Success - reload the page
+                        location.reload();
+                    }
+                }
+            )
+            .fail(function(xhr) {
+                $btn.prop('disabled', false);
+                $btn.html(originalHtml);
+                showMessage('خطایی رخ داد. لطفا دوباره تلاش کنید.', true);
+            });
+        });
+    });
+</script>
+{% endblock %}

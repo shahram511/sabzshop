@@ -1,0 +1,442 @@
+/* ========================================
+   PRODUCT LIST PAGE STYLES
+   ======================================== */
+
+/* ========================================
+   NAVIGATION BAR - Top links
+   ======================================== */
+
+.nav-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    margin: 20px auto;
+    max-width: 1400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container a {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(231, 111, 81, 0.3);
+}
+
+.nav-container a:hover {
+    background: linear-gradient(135deg, #E76F51 0%, #D62828 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(214, 40, 40, 0.4);
+}
+
+/* ========================================
+   PRODUCT LIST HEADER - Title and filters
+   ======================================== */
+
+.product-list-header {
+    text-align: center;
+    background: linear-gradient(135deg, #FF6B35 0%, #D62828 100%);
+    padding: 40px 20px;
+    margin: 0 0 40px 0;
+    box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3);
+    color: white;
+}
+
+.product-list-header h1 {
+    margin: 0 0 25px 0;
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Inventory filter section */
+.inventory-filter {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.inventory-filter strong {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.inventory-filter a {
+    display: inline-block;
+    margin: 5px 10px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.inventory-filter a:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Active filter state */
+.inventory-filter a.active {
+    background: rgba(255, 255, 255, 0.9);
+    color: #D62828;
+    border-color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+}
+
+/* ========================================
+   MAIN CONTAINER - Sidebar and products
+   ======================================== */
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   SIDEBAR - Category navigation
+   ======================================== */
+
+.small-div {
+    width: 280px;
+    min-height: 400px;
+    background: linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    padding: 25px;
+    transition: transform 0.3s ease;
+    position: sticky;
+    top: 20px;
+}
+
+.small-div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Category list */
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-item {
+    margin: 12px 0;
+    transition: all 0.3s ease;
+}
+
+.category-item a {
+    display: block;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(231, 111, 81, 0.3);
+    transition: all 0.3s ease;
+}
+
+.category-item a:hover {
+    background: linear-gradient(135deg, #E76F51 0%, #D62828 100%);
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(214, 40, 40, 0.4);
+}
+
+/* ========================================
+   PRODUCTS GRID - Main content area
+   ======================================== */
+
+.large-div {
+    flex: 1;
+    min-width: 600px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+/* ========================================
+   PRODUCT CARD - Individual product item
+   ======================================== */
+
+.product-item {
+    width: 260px;
+    height: auto;
+    background: linear-gradient(135deg, #FFE5D9 0%, #FFC8A0 100%);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Favorite button positioned at top right of product card */
+.product-item .add-to-favorite {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: auto;
+    height: auto;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 5px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    z-index: 10;
+}
+
+.product-item .add-to-favorite:hover {
+    background: transparent;
+    transform: scale(1.1);
+    box-shadow: none;
+}
+
+.product-item .add-to-favorite i {
+    font-size: 24px;
+    color: #000000;
+    transition: all 0.3s ease;
+}
+
+.product-item .add-to-favorite.favorited {
+    background: transparent;
+    box-shadow: none;
+}
+
+.product-item .add-to-favorite.favorited i {
+    color: #000000;
+}
+
+.product-item .add-to-favorite.clicking {
+    transform: scale(0.9);
+}
+
+/* Animation for product-item favorite button */
+.product-item .add-to-favorite.favorited i.bookmark-animate {
+    animation: heartFill 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.product-item .add-to-favorite.favorited i.fa-solid:not(.bookmark-animate) {
+    animation: heartPulse 2s ease-in-out infinite;
+}
+
+.product-item:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.product-item h2 {
+    font-size: 1.3em;
+    color: #8B4513;
+    margin: 10px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.product-item h2 a {
+    color: #D2691E;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.product-item h2 a:hover {
+    color: #FF6B35;
+}
+
+.product-item img {
+    width: 100%;
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 15px 0;
+    transition: transform 0.3s ease;
+}
+
+.product-item img:hover {
+    transform: scale(1.05);
+}
+
+/* ========================================
+   PRICE SECTION - Product pricing info
+   ======================================== */
+
+.price {
+    text-align: center;
+    width: 100%;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #A0522D;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.new-price {
+    color: #D62828;
+    font-weight: bold;
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.inventory {
+    color: #2A9D8F;
+    font-weight: 600;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes heartFill {
+    0% {
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.4) rotate(5deg);
+        opacity: 1;
+    }
+    70% {
+        transform: scale(0.9) rotate(-2deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes heartPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - Mobile devices
+   ======================================== */
+
+@media (max-width: 992px) {
+    .main-container {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .small-div {
+        width: 100%;
+        position: static;
+    }
+
+    .large-div {
+        min-width: 100%;
+        padding: 20px;
+    }
+
+    .product-item {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-list-header h1 {
+        font-size: 2em;
+    }
+
+    .inventory-filter {
+        padding: 15px;
+    }
+
+    .inventory-filter a {
+        display: block;
+        margin: 8px 0;
+        width: 100%;
+    }
+
+    .product-item {
+        width: 100%;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .nav-container a {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-list-header {
+        padding: 25px 15px;
+    }
+
+    .product-list-header h1 {
+        font-size: 1.6em;
+    }
+
+    .large-div {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .product-item {
+        padding: 15px;
+    }
+}
+

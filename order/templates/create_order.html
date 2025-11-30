@@ -1,0 +1,230 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+
+{% block title %}ثبت سفارش{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/create_order.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    /* Hide shopping cart on invoice page */
+    .cart-container {
+        display: none !important;
+    }
+</style>
+<!-- Header Section -->
+<div class="order-header">
+    <div class="header-content">
+        <h1><i class="fas fa-shopping-bag"></i> ثبت سفارش</h1>
+        <p class="header-subtitle">لطفاً اطلاعات خود را تکمیل کنید</p>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="create-order-container">
+    <div class="order-layout">
+        <!-- Order Summary Section -->
+        <div class="order-summary-section">
+            <div class="summary-card">
+                <h2><i class="fas fa-list"></i> خلاصه سفارش</h2>
+                
+                <div class="cart-items">
+                    {% for item in cart %}
+                    <div class="cart-item-card">
+                        <div class="item-image">
+                            {% if item.product.images.first %}
+                                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <i class="fas fa-image"></i>
+                            {% endif %}
+                        </div>
+                        <div class="item-details">
+                            <h3>{{ item.product.name }}</h3>
+                            <div class="item-meta">
+                                <span class="quantity"><i class="fas fa-layer-group"></i> {{ item.quantity }} عدد</span>
+                                <span class="price">{{ item.price }} تومان</span>
+                            </div>
+                        </div>
+                        <div class="item-total">
+                            <strong>{{ item.total }} تومان</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span>جمع کل:</span>
+                        <strong>{{ cart.get_total_price }} تومان</strong>
+                    </div>
+                    <div class="price-row">
+                        <span>هزینه پست:</span>
+                        <strong>{{ cart.get_post_price }} تومان</strong>
+                    </div>
+                    {% if discount_amount %}
+                    <div class="price-row discount-row">
+                        <span><i class="fas fa-tag"></i> تخفیف:</span>
+                        <strong class="discount-amount">-{{ discount_amount }} تومان</strong>
+                    </div>
+                    {% endif %}
+                    <div class="price-row final-price">
+                        <span>جمع کل نهایی:</span>
+                        <strong>{{ final_price|default:cart.get_final_price }} تومان</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="order-form-section">
+            <div class="form-card">
+                <h2><i class="fas fa-user-edit"></i> اطلاعات سفارش</h2>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="order-form">
+                    {% csrf_token %}
+                    
+                    <!-- Discount Code Section -->
+                    <div class="discount-section">
+                        <label for="discount_code">
+                            <i class="fas fa-ticket-alt"></i> کد تخفیف
+                        </label>
+                        <div class="discount-input-group">
+                            <input type="text" id="discount_code" name="discount_code" class="discount-input" placeholder="کد تخفیف خود را وارد کنید" value="{{ request.POST.discount_code|default:'' }}">
+                            <button type="button" class="btn-apply-discount" onclick="applyDiscount()">
+                                <i class="fas fa-check"></i> اعمال
+                            </button>
+                        </div>
+                        {% if discount_error %}
+                        <div class="discount-error">
+                            <i class="fas fa-exclamation-circle"></i> {{ discount_error }}
+                        </div>
+                        {% endif %}
+                        {% if discount_success %}
+                        <div class="discount-success">
+                            <i class="fas fa-check-circle"></i> کد تخفیف با موفقیت اعمال شد!
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> اطلاعات شخصی</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.first_name.id_for_label }}">
+                                    <i class="fas fa-user"></i> نام
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="field-error">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.last_name.id_for_label }}">
+                                    <i class="fas fa-user"></i> نام خانوادگی
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="field-error">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.phone.id_for_label }}">
+                                    <i class="fas fa-phone"></i> شماره تلفن
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="field-error">{{ form.phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.email.id_for_label }}">
+                                    <i class="fas fa-envelope"></i> ایمیل
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="field-error">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> آدرس ارسال</h3>
+                        <div class="form-group">
+                            <label for="{{ form.city.id_for_label }}">
+                                <i class="fas fa-city"></i> شهر
+                            </label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                                <div class="field-error">{{ form.city.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.address.id_for_label }}">
+                                <i class="fas fa-home"></i> آدرس کامل
+                            </label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="field-error">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.postal_code.id_for_label }}">
+                                <i class="fas fa-mail-bulk"></i> کد پستی
+                            </label>
+                            {{ form.postal_code }}
+                            {% if form.postal_code.errors %}
+                                <div class="field-error">{{ form.postal_code.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit-order">
+                            <i class="fas fa-check-circle"></i> ثبت سفارش
+                        </button>
+                        <a href="{% url 'cart:cart_detail' %}" class="btn-back">
+                            <i class="fas fa-arrow-right"></i> بازگشت به سبد خرید
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function applyDiscount() {
+    const discountCode = document.getElementById('discount_code').value;
+    if (discountCode) {
+        // Submit form to validate and apply discount
+        const form = document.querySelector('.order-form');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال اعمال...';
+        
+        // Create a hidden input to indicate this is a discount check
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'apply_discount';
+        hiddenInput.value = '1';
+        form.appendChild(hiddenInput);
+        
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

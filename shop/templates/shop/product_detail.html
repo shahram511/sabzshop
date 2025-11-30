@@ -1,0 +1,385 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Header Section -->
+<div class="product-detail-header">
+    <div class="header-content">
+        <h1><i class="fas fa-box-open"></i> {{ product.name }}</h1>
+        <p class="header-subtitle">جزئیات کامل محصول</p>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="product-detail-container">
+    <!-- Image Section -->
+    <div class="product-detail-image">
+        <div class="product-detail-image-container">
+            {% if product.images.all %}
+                {% for img in product.images.all %}
+                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% endfor %}
+            {% else %}
+                <img src="{% static 'images/no-image.png' %}" alt="No image" class="product-image">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="product-detail-info">
+        <!-- Favorite Button -->
+        {% if user.is_authenticated %}
+        <div class="favorite-section">
+            <button class="add-to-favorite-detail {% if product in user.favorite_products.all %}favorited{% endif %}" 
+                    type="button" 
+                    data-product-id="{{ product.id }}"
+                    title="{% if product in user.favorite_products.all %}Remove from favorite{% else %}Add to favorite{% endif %}">
+                {% if product in user.favorite_products.all %}
+                    <i class="fa-solid fa-bookmark"></i>
+                {% else %}
+                    <i class="fa-regular fa-bookmark"></i>
+                {% endif %}
+                <span>{% if product in user.favorite_products.all %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}</span>
+            </button>
+        </div>
+        {% endif %}
+
+        <h2>{{ product.name }}</h2>
+
+        <!-- Price Section -->
+        <div class="price-section">
+            {% if product.off > 0 %}
+                <div class="price-item old-price-item">
+                    <i class="fas fa-tag"></i>
+                    <span class="price-label">قیمت قدیمی:</span>
+                    <span class="price-value">{{ product.price }} تومان</span>
+                </div>
+                <div class="price-item new-price-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="price-label">قیمت جدید:</span>
+                    <span class="price-value">{{ product.new_price }} تومان</span>
+                </div>
+                <div class="price-item discount-item">
+                    <i class="fas fa-fire"></i>
+                    <span class="price-label">تخفیف:</span>
+                    <span class="price-value">{{ product.off }}%</span>
+                </div>
+            {% else %}
+                <div class="price-item new-price-item">
+                    <i class="fas fa-tag"></i>
+                    <span class="price-label">قیمت:</span>
+                    <span class="price-value">{{ product.price }} تومان</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Product Details -->
+        <div class="details-section">
+            <div class="detail-item">
+                <i class="fas fa-box"></i>
+                <span class="detail-label">موجودی:</span>
+                <span class="detail-value {% if product.inventory > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                    {{ product.inventory }} در انبار موجود
+                </span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-weight"></i>
+                <span class="detail-label">وزن:</span>
+                <span class="detail-value">{{ product.weight }} گرم</span>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span class="detail-label">تاریخ ایجاد:</span>
+                <span class="detail-value">{{ product.created|date:"Y/m/d" }}</span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        {% if product.description %}
+        <div class="description-section">
+            <h3><i class="fas fa-align-right"></i> توضیحات محصول</h3>
+            <p class="description-text">{{ product.description }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Features -->
+        {% if product.features.all %}
+        <div class="features-section">
+            <h3><i class="fas fa-list"></i> ویژگی‌های محصول</h3>
+            <ul class="features-list">
+                {% for feature in product.features.all %}
+                <li class="feature-item">
+                    <i class="fas fa-check"></i>
+                    <strong>{{ feature.name }}:</strong>
+                    <span>{{ feature.value }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Add to Cart Section -->
+        <div class="cart-section">
+            <div id="cart-message" class="cart-message" style="display: none;"></div>
+            <button class="add-to-cart-btn" id="add-to-cart" type="button" data-product-id="{{ product.id }}">
+                <i class="fas fa-shopping-cart"></i>
+                <span>افزودن به سبد خرید</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Similar Products Section -->
+{% if similar_products %}
+<div class="similar-products-section">
+    <div class="similar-header">
+        <h2><i class="fas fa-th-large"></i> محصولات مشابه</h2>
+    </div>
+    <div class="similar-products-grid">
+        {% for similar_product in similar_products %}
+        <div class="similar-product-item">
+            <a href="{{ similar_product.get_absolute_url }}" class="similar-product-link">
+                <div class="similar-product-image">
+                    {% if similar_product.images.first %}
+                        <img src="{{ similar_product.images.first.image.url }}" alt="{{ similar_product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="No image">
+                    {% endif %}
+                    <div class="similar-overlay">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </div>
+                <div class="similar-product-info">
+                    <h3>{{ similar_product.name }}</h3>
+                    <div class="similar-product-price">
+                        {% if similar_product.off > 0 %}
+                            <span class="old-price">{{ similar_product.price }} تومان</span>
+                            <span class="new-price">{{ similar_product.new_price }} تومان</span>
+                        {% else %}
+                            <span class="new-price">{{ similar_product.price }} تومان</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Comments Section -->
+<div class="comments-section">
+    <div class="comments-header">
+        <h2><i class="fas fa-comments"></i> نظرات کاربران</h2>
+        <span class="comments-count">{{ comments|length }} نظر</span>
+    </div>
+
+    <!-- Display Existing Comments -->
+    {% if comments %}
+        <div class="comments-list">
+            {% for comment in comments %}
+            <div class="comment-item">
+                <div class="comment-header">
+                    <div class="comment-user">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-info">
+                            <h4>{{ comment.user.first_name|default:"کاربر" }} {{ comment.user.last_name|default:"" }}</h4>
+                            <span class="comment-date">
+                                <i class="fas fa-calendar-alt"></i> {{ comment.created|date:"Y/m/d H:i" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="comment-body">
+                    <p>{{ comment.comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-comments">
+            <i class="fas fa-comment-slash"></i>
+            <p>هنوز نظری برای این محصول ثبت نشده است.</p>
+        </div>
+    {% endif %}
+
+    <!-- Add Comment Form -->
+    {% if user.is_authenticated %}
+        {% if has_purchased %}
+        <div class="add-comment-section">
+            <h3><i class="fas fa-edit"></i> اضافه کردن نظر</h3>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if 'نظر' in message.message or 'خریداری' in message.message %}
+                    <div class="comment-message alert-{{ message.tags }}">
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'shop:add_comment' %}" class="comment-form">
+                {% csrf_token %}
+                {{ form.product }}
+                <div class="form-group">
+                    <label for="{{ form.comment.id_for_label }}">
+                        <i class="fas fa-comment-dots"></i> نظر شما:
+                    </label>
+                    {{ form.comment }}
+                    {% if form.comment.errors %}
+                        <div class="field-errors">
+                            {% for error in form.comment.errors %}
+                                <span class="error-text">
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn-submit-comment">
+                    <i class="fas fa-paper-plane"></i> ثبت نظر
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div class="purchase-to-comment">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if 'خریداری' in message.message %}
+                    <div class="comment-message alert-{{ message.tags }}" style="margin-bottom: 20px;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <div class="purchase-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3>برای ثبت نظر باید این محصول را خریداری کرده باشید</h3>
+            <p>شما باید این محصول را خریداری کرده باشید تا بتوانید نظر خود را ثبت کنید.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn-shop">
+                <i class="fas fa-store"></i> مشاهده محصولات
+            </a>
+        </div>
+        {% endif %}
+    {% else %}
+    <div class="login-to-comment">
+        <i class="fas fa-lock"></i>
+        <p>برای ثبت نظر، لطفاً <a href="{% url 'shop:register' %}">وارد حساب کاربری</a> خود شوید.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        // Cart message handler
+        function showMessage(message, isError = false) {
+            var $msg = $('#cart-message');
+            $msg.text(message);
+            $msg.css({
+                'display': 'block',
+                'background': isError ? 'linear-gradient(135deg, #F8D7DA 0%, #F1B0B7 100%)' : 'linear-gradient(135deg, #D4EDDA 0%, #A8D5BA 100%)',
+                'color': isError ? '#721c24' : '#155724',
+                'border': '2px solid ' + (isError ? '#DC3545' : '#28A745')
+            });
+            setTimeout(function() {
+                $msg.fadeOut();
+            }, 5000);
+        }
+
+        // Add to cart handler
+        $('#add-to-cart').on('click', function () {
+            var $btn = $(this);
+            var originalText = $btn.html();
+            
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> در حال افزودن...');
+            
+            $.post("{% url 'cart:cart_add' product.id %}",
+                   { csrfmiddlewaretoken: '{{ csrf_token }}' },
+                   function (data) {
+                       if (data.success === false && data.error) {
+                           showMessage(data.error, true);
+                       } else {
+                           showMessage('محصول به سبد خرید اضافه شد', false);
+                           setTimeout(function() {
+                               location.reload();
+                           }, 1000);
+                       }
+                   })
+                   .fail(function(xhr) {
+                       showMessage('خطایی رخ داد. لطفا دوباره تلاش کنید.', true);
+                   })
+                   .always(function() {
+                       $btn.prop('disabled', false).html(originalText);
+                   });
+        });
+
+        // Favorite button handler
+        {% if user.is_authenticated %}
+        $('.add-to-favorite-detail').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var addToFavoriteButton = $(this);
+            var icon = addToFavoriteButton.find('i');
+            var span = addToFavoriteButton.find('span');
+            var productId = addToFavoriteButton.data('product-id');
+            
+            if (!icon.length) {
+                console.error('Icon not found!');
+                return;
+            }
+            
+            // Add click animation
+            addToFavoriteButton.addClass('clicking');
+            setTimeout(function(){
+                addToFavoriteButton.removeClass('clicking');
+            }, 300);
+            
+            $.ajax({
+                type: 'POST',
+                url: '{%url "shop:add_to_favorite" %}',
+                data: {
+                    'product_id': productId,
+                    'csrfmiddlewaretoken': '{{csrf_token}}'
+                },
+                success: function(data){
+                    console.log('Response:', data);
+                    if (data.saved === true){
+                        // Change to filled bookmark with animation
+                        icon.removeClass('fa-regular').addClass('fa-solid bookmark-animate');
+                        addToFavoriteButton.addClass('favorited');
+                        addToFavoriteButton.attr('title', 'Remove from favorite');
+                        span.text('حذف از علاقه‌مندی‌ها');
+                        
+                        // Remove animation class after animation completes
+                        setTimeout(function(){
+                            icon.removeClass('bookmark-animate');
+                        }, 700);
+                    } else if (data.saved === false){
+                        // Change to outline bookmark
+                        icon.removeClass('fa-solid bookmark-animate').addClass('fa-regular');
+                        addToFavoriteButton.removeClass('favorited');
+                        addToFavoriteButton.attr('title', 'Add to favorite');
+                        span.text('افزودن به علاقه‌مندی‌ها');
+                    }
+                },
+                error: function(xhr, status, error){
+                    console.error('AJAX Error:', error);
+                    console.error('Response:', xhr.responseText);
+                }
+            });
+        });
+        {% endif %}
+    });
+</script>
+
+{% endblock %}

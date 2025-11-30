@@ -1,0 +1,47 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}تایید کد ورود{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>تایید کد ورود</h1>
+    <p>کد ارسال شده به شماره {{ phone }} را وارد کنید</p>
+    
+    {% if remaining_seconds %}
+        <p>زمان باقیمانده: <span id="countdown">{{ remaining_seconds }}</span> ثانیه</p>
+    {% endif %}
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="code" placeholder="کد 6 رقمی" maxlength="6" required>
+        <button type="submit">تایید</button>
+    </form>
+    
+    <a href="{% url 'shop:register' %}">ارسال مجدد کد</a>
+</div>
+
+<script>
+    // Countdown timer
+    let timeLeft = {{ remaining_seconds|default:0 }};
+    const countdownEl = document.getElementById('countdown');
+    
+    if (countdownEl) {
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                countdownEl.textContent = 'منقضی شده';
+            }
+        }, 1000);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+<h1>تایید کد</h1>
+{% if messages %}
+  <ul class="alerts">
+    {% for message in messages %}
+      <li class="alert {{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% if remaining_seconds is not None %}
+  <p id="countdown" data-remaining="{{ remaining_seconds }}">
+    کد ارسال شده تا {{ remaining_seconds }} ثانیه دیگر معتبر است (حداکثر زمان اعتبار: {{ lifetime_minutes }} دقیقه).
+  </p>
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="code" placeholder="کد تایید را وارد کنید">
+    <button type="submit">تایید</button>
+</form>
+{% if remaining_seconds is not None %}
+<script>
+  (function () {
+    var countdownEl = document.getElementById('countdown');
+    if (!countdownEl) { return; }
+
+    var remaining = parseInt(countdownEl.dataset.remaining, 10);
+    if (isNaN(remaining) || remaining < 0) { return; }
+
+    var totalSeconds = remaining;
+    var lifetimeMinutes = parseInt('{{ lifetime_minutes }}', 10) || 0;
+
+    function format(seconds) {
+      if (seconds < 0) { seconds = 0; }
+      var minutes = Math.floor(seconds / 60);
+      var secs = seconds % 60;
+      if (minutes > 0) {
+        return minutes + ' دقیقه و ' + secs + ' ثانیه';
+      }
+      return secs + ' ثانیه';
+    }
+
+    function updateDisplay() {
+      var message;
+      if (remaining <= 0) {
+        message = 'کد تایید منقضی شده است. لطفا دوباره درخواست دهید.';
+      } else {
+        message = 'کد ارسال شده تا ' + format(remaining) +
+          ' دیگر معتبر است (حداکثر زمان اعتبار: ' + lifetimeMinutes + ' دقیقه).';
+      }
+      countdownEl.textContent = message;
+    }
+
+    updateDisplay();
+    var timer = setInterval(function () {
+      remaining -= 1;
+      updateDisplay();
+      if (remaining <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+  })();
+</script>
+{% endif %}
