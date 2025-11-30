@@ -3,12 +3,20 @@
 {% block title %}تایید کد ورود{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>تایید کد ورود</h1>
-    <p>کد ارسال شده به شماره {{ phone }} را وارد کنید</p>
+<link rel="stylesheet" href="{% static 'css/verify_login.css' %}">
+<div class="verify-container">
+    <div class="verify-header">
+        <h1>تایید کد ورود</h1>
+        <p>کد ارسال شده به شماره</p>
+        <span class="phone-display">{{ phone }}</span>
+    </div>
     
     {% if remaining_seconds %}
-        <p>زمان باقیمانده: <span id="countdown">{{ remaining_seconds }}</span> ثانیه</p>
+        <div class="countdown-section">
+            <p>زمان باقیمانده:</p>
+            <span id="countdown" class="countdown-timer {% if remaining_seconds <= 30 %}warning{% endif %}">{{ remaining_seconds }}</span>
+            <p style="margin-top: 10px; font-size: 0.9rem;">ثانیه</p>
+        </div>
     {% endif %}
     
     {% if messages %}
@@ -19,13 +27,27 @@
         {% endfor %}
     {% endif %}
     
-    <form method="post">
+    <form method="post" class="verify-form">
         {% csrf_token %}
-        <input type="text" name="code" placeholder="کد 6 رقمی" maxlength="6" required>
-        <button type="submit">تایید</button>
+        <div class="form-group">
+            <label for="code-input">کد 6 رقمی</label>
+            <input type="text" 
+                   id="code-input"
+                   name="code" 
+                   class="code-input"
+                   placeholder="000000" 
+                   maxlength="6" 
+                   pattern="[0-9]{6}"
+                   inputmode="numeric"
+                   required
+                   autocomplete="one-time-code">
+        </div>
+        <button type="submit" class="submit-button">تایید کد ورود</button>
     </form>
     
-    <a href="{% url 'shop:register' %}">ارسال مجدد کد</a>
+    <div class="resend-link">
+        <a href="{% url 'shop:register' %}">ارسال مجدد کد</a>
+    </div>
 </div>
 
 <script>
@@ -37,11 +59,33 @@
         const timer = setInterval(() => {
             timeLeft--;
             countdownEl.textContent = timeLeft;
+            
+            // Add warning class when 30 seconds or less
+            if (timeLeft <= 30 && timeLeft > 0) {
+                countdownEl.classList.add('warning');
+            }
+            
+            // Add expired class when time is up
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 countdownEl.textContent = 'منقضی شده';
+                countdownEl.classList.remove('warning');
+                countdownEl.classList.add('expired');
             }
         }, 1000);
     }
+    
+    // Auto-focus code input
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeInput = document.getElementById('code-input');
+        if (codeInput) {
+            codeInput.focus();
+        }
+    });
+    
+    // Format code input (only numbers)
+    document.getElementById('code-input')?.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 </script>
 {% endblock %}

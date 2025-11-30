@@ -3,9 +3,12 @@
 {% block title %}ورود / ثبت نام{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>ورود / ثبت نام</h1>
-    <p>شماره تلفن همراه خود را وارد کنید</p>
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<div class="register-container">
+    <div class="register-header">
+        <h1>ورود / ثبت نام</h1>
+        <p>شماره تلفن همراه خود را وارد کنید</p>
+    </div>
     
     {% if messages %}
         {% for message in messages %}
@@ -15,15 +18,27 @@
         {% endfor %}
     {% endif %}
     
-    <form method="post">
+    <form method="post" class="register-form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ارسال کد ورود</button>
+        <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+                <ul class="errorlist">
+                    {% for error in form.phone.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <button type="submit" class="submit-button">ارسال کد ورود</button>
     </form>
     
     {% if user.is_authenticated %}
-        <p>شما وارد شده اید: {{ user.phone }}</p>
-        <a href="{% url 'shop:product_list' %}">بازگشت به صفحه اصلی</a>
+        <div class="authenticated-message">
+            <p>شما وارد شده اید: {{ user.phone }}</p>
+            <a href="{% url 'shop:product_list' %}">بازگشت به صفحه اصلی</a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

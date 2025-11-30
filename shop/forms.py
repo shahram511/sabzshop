@@ -4,7 +4,17 @@ from account.models import ShopUser
 from order.models import OrderItem
 
 class VerifyPhoneForm(forms.Form):
-    phone = forms.CharField(max_length=11, label='شماره تلفن همراه')
+    phone = forms.CharField(
+        max_length=11, 
+        label='شماره تلفن همراه',
+        widget=forms.TextInput(attrs={
+            'class': 'phone-input',
+            'placeholder': '09123456789',
+            'type': 'tel',
+            'pattern': '[0-9]{11}',
+            'maxlength': '11'
+        })
+    )
     def clean_phone(self):
         phone = self.cleaned_data['phone']
         if not phone.isdigit():

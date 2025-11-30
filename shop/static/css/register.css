@@ -1,0 +1,243 @@
+/* ========================================
+   REGISTER PAGE STYLES
+   ======================================== */
+
+.register-container {
+    max-width: 500px;
+    margin: 80px auto 60px;
+    padding: 50px 40px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 239, 224, 0.9) 100%);
+    border-radius: 28px;
+    box-shadow: 0 30px 60px rgba(214, 40, 40, 0.12);
+    backdrop-filter: blur(6px);
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.register-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #D62828;
+    margin: 0 0 15px 0;
+    letter-spacing: 0.5px;
+    text-shadow: 2px 2px 4px rgba(214, 40, 40, 0.1);
+}
+
+.register-header p {
+    font-size: 1.1rem;
+    color: #8B4513;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Form Styles */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #8B4513;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group .phone-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1rem;
+    border: 2px solid rgba(214, 40, 40, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group .phone-input:focus {
+    outline: none;
+    border-color: #D62828;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 4px rgba(214, 40, 40, 0.1);
+    transform: translateY(-2px);
+}
+
+.form-group input::placeholder,
+.form-group .phone-input::placeholder {
+    color: rgba(139, 69, 19, 0.5);
+}
+
+/* Error Messages */
+.form-group .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+}
+
+.form-group .errorlist li {
+    color: #D62828;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 12px;
+    background: rgba(214, 40, 40, 0.1);
+    border-radius: 8px;
+    border-right: 3px solid #D62828;
+}
+
+/* Submit Button */
+.submit-button {
+    width: 100%;
+    padding: 18px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #FF6B35 0%, #D62828 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(214, 40, 40, 0.3);
+    margin-top: 10px;
+}
+
+.submit-button:hover {
+    background: linear-gradient(135deg, #D62828 0%, #B71C1C 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(214, 40, 40, 0.4);
+}
+
+.submit-button:active {
+    transform: translateY(-1px);
+}
+
+/* Alert Messages */
+.alert {
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #D4EDDA 0%, #A8D5BA 100%);
+    color: #155724;
+    border-right: 4px solid #28A745;
+}
+
+.alert-error {
+    background: linear-gradient(135deg, #F8D7DA 0%, #F1B0B7 100%);
+    color: #721C24;
+    border-right: 4px solid #DC3545;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #D1ECF1 0%, #BEE5EB 100%);
+    color: #0C5460;
+    border-right: 4px solid #17A2B8;
+}
+
+/* Authenticated User Message */
+.authenticated-message {
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%);
+    border-radius: 12px;
+    margin-top: 30px;
+}
+
+.authenticated-message p {
+    color: #00695C;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+}
+
+.authenticated-message a {
+    display: inline-block;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #2A9D8F 0%, #21867a 100%);
+    color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+}
+
+.authenticated-message a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(42, 157, 143, 0.4);
+}
+
+/* Phone Icon */
+.phone-icon {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 1.2rem;
+    color: #D62828;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .register-container {
+        margin: 40px 20px;
+        padding: 35px 25px;
+    }
+
+    .register-header h1 {
+        font-size: 2rem;
+    }
+
+    .register-header p {
+        font-size: 1rem;
+    }
+
+    .form-group input {
+        padding: 14px 18px;
+    }
+
+    .submit-button {
+        padding: 16px 25px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        margin: 30px 15px;
+        padding: 30px 20px;
+    }
+
+    .register-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
