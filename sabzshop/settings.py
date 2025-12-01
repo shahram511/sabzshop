@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework', 
     'django_extensions',
     'taggit',
+    'drf_spectacular',
 ]
 
 
@@ -165,11 +166,15 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
-    
 }
 
-
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SabzShop API',
+    'DESCRIPTION': 'API for SabzShop',
+    'VERSION': '1.0.0',
+}
 
 MERCHANT = "4941e54c-6b35-410d-b16f-1554e3c92004"
 

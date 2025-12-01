@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from shop.models import Product, ProductFeature, ProductImage, Category
 from account.models import ShopUser
-from order.models import Order, OrderItem
+from order.models import Order
 
 class ProductFeatureSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,11 +21,12 @@ class CategorySerializer(serializers.ModelSerializer):
         
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(),source='category',write_only=True, required=True)
     features = ProductFeatureSerializer(many=True, read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
     class Meta:
         model = Product
-        fields = ['id', 'name', 'new_price', 'description', 'category', 'weight', 'price', 'off', 'inventory', 'features', 'images']
+        fields = ['id', 'name', 'new_price', 'description', 'category', 'weight', 'price', 'off', 'inventory', 'features', 'images', 'category_id']
 
 
 class ShopListSerializer(serializers.ModelSerializer):
@@ -80,3 +81,5 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'buyer', 'first_name', 'last_name', 'phone', 'email', 'city', 'province', 'address', 'postal_code', 'created', 'updated', 'paid']
+
+        
